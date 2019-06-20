@@ -83,7 +83,6 @@ func (g *Graph) CreateGraph(name string, kind string) {
 
 func (g *Graph) DepthGraph(start string, end string) {
 
-	//Check is a list to check if you passed in node
 	flag := 0
 	/*flag is a flag to use for first iteration*/
 	for flag == 0 || len(g.stack) != 0 {
@@ -107,4 +106,8 @@ func (g *Graph) DepthGraph(start string, end string) {
 		start = x
 	}
 	g.Walk += start
+}
+
+func (g *Graph) WideGraph(start string, end string) {
+
 }

@@ -1,6 +1,6 @@
 # gograph
 
-Library to check of the Graph Theory in golang
+Library to check the Graph Theory in golang
 
 ## Actual content
 

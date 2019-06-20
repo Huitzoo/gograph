@@ -10,6 +10,6 @@ func main() {
 
 	g := graph.Graph{}
 	g.CreateGraph("struct.txt", "0")
-	g.DeepGraph("A", "H")
+	g.WideGraph("A", "H")
 	fmt.Println(g.Walk)
 }
