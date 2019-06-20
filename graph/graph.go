@@ -81,7 +81,7 @@ func (g *Graph) CreateGraph(name string, kind string) {
 	//len(strings.Replace(lines[0], " ", "", -1))
 }
 
-func (g *Graph) DeepGraph(start string, end string) {
+func (g *Graph) DepthGraph(start string, end string) {
 
 	//Check is a list to check if you passed in node
 	flag := 0
