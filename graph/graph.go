@@ -2,11 +2,12 @@ package graph
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"strconv"
 	"strings"
+
+	"../tree"
 )
 
 func e(err error) {
@@ -77,13 +78,12 @@ func (g *Graph) CreateGraph(name string, kind string) {
 	g.nodes = nodes
 	g.n_edg = len(g.edges)
 	g.kind = kind
-	g.Walk = ""
-	g.check = make([]bool, len(g.nodes.name))
 	//len(strings.Replace(lines[0], " ", "", -1))
 }
 
-func (g *Graph) DepthGraph(start string, end string) {
-
+func (g *Graph) DepthGraphHamiltonian(start string, end string) {
+	g.Walk = ""
+	g.check = make([]bool, len(g.nodes.name))
 	flag := 0
 	/*flag is a flag to use for first iteration*/
 	for flag == 0 || len(g.stack) != 0 {
@@ -91,16 +91,11 @@ func (g *Graph) DepthGraph(start string, end string) {
 
 		g.Walk += start + " "
 		g.check[g.nodes.name[start]] = true
-		if g.kind != "0" {
+		if g.kind != "ham" {
 			e(errors.New("Kind of Graph doesn't support this type of graph"))
 		}
-		fmt.Println(g.check)
-		fmt.Println(g.nodes.name)
-		fmt.Println(g.stack)
-		fmt.Println("s: ", start)
 		for _, edge := range g.edges {
 			if edge.nodes[0] == start {
-				fmt.Println(edge.nodes[1])
 				if !g.check[g.nodes.name[edge.nodes[1]]] {
 					g.check[g.nodes.name[edge.nodes[1]]] = true
 					g.stack = append(g.stack, edge.nodes[1])
@@ -114,6 +109,33 @@ func (g *Graph) DepthGraph(start string, end string) {
 	g.Walk += start
 }
 
-func (g *Graph) WideGraph(start string, end string) {
+func (g *Graph) WideGraphHamiltonian(start string, end string) {
 
+	flag := 0
+	if g.kind != "ham" {
+		e(errors.New("Kind of Graph doesn't support this type of graph"))
+	}
+	/*flag is a flag to use for first iteration*/
+	for flag == 0 || len(g.stack) != 0 {
+		flag = 1
+		g.Walk += start + " "
+		g.check[g.nodes.name[start]] = true
+		for _, edge := range g.edges {
+			if edge.nodes[0] == start {
+				if !g.check[g.nodes.name[edge.nodes[1]]] {
+					g.check[g.nodes.name[edge.nodes[1]]] = true
+					g.stack = append(g.stack, edge.nodes[1])
+				}
+			}
+		}
+		x, stack := g.stack[0], g.stack[1:len(g.stack)]
+		g.stack = stack
+		start = x
+	}
+	g.Walk += start
+
+}
+
+func (g *Graph) WideGraphNoHamiltonian(start string, end string) {
+	t := tree.Tree{}
 }

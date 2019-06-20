@@ -1,0 +1,21 @@
+V R S W T X U Y
+V R 0
+R S 0
+R V 0
+S W 0
+S R 0
+W S 0
+W T 0
+W X 0
+T W 0
+T X 0
+T U 0
+X W 0
+X T 0
+X U 0
+X Y 0
+U T 0
+U X 0
+U Y 0
+Y X 0
+Y U 0

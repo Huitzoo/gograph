@@ -21,6 +21,6 @@ F G 0
 G D 0
 G F 0
 G H 0
-H F 0
 H E 0
+H F 0
 H G 0
