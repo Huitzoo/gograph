@@ -2,6 +2,7 @@ package graph
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -62,7 +63,7 @@ func (g *Graph) CreateGraph(name string, kind string) {
 		}
 	}
 	/*Create edge*/
-	for _, line := range lines[1 : len(lines)-1] {
+	for _, line := range lines[1:len(lines)] {
 		con := strings.Split(line, " ")
 		ed := edge{}
 		ed.nodes = append(ed.nodes, con[0])
@@ -87,14 +88,19 @@ func (g *Graph) DepthGraph(start string, end string) {
 	/*flag is a flag to use for first iteration*/
 	for flag == 0 || len(g.stack) != 0 {
 		flag = 1
+
 		g.Walk += start + " "
 		g.check[g.nodes.name[start]] = true
 		if g.kind != "0" {
 			e(errors.New("Kind of Graph doesn't support this type of graph"))
 		}
-
+		fmt.Println(g.check)
+		fmt.Println(g.nodes.name)
+		fmt.Println(g.stack)
+		fmt.Println("s: ", start)
 		for _, edge := range g.edges {
 			if edge.nodes[0] == start {
+				fmt.Println(edge.nodes[1])
 				if !g.check[g.nodes.name[edge.nodes[1]]] {
 					g.check[g.nodes.name[edge.nodes[1]]] = true
 					g.stack = append(g.stack, edge.nodes[1])
