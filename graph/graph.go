@@ -10,7 +10,7 @@ import (
 	"../tree"
 )
 
-func e(err error) {
+func bug(err error) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -31,27 +31,14 @@ type Graph struct {
 	nodes   node
 	n_edg   int
 	n_nodes int
-	Walk    string
-	check   []bool
-	stack   []string
 }
 
-/*
-func (g *Graph) findIndex(a string) int {
-	for i, n := range g.nodes {
-		if n.name == a {
-			return i
-		}
-	}
-	return -1
-}
-*/
 func (g *Graph) CreateGraph(name string, kind string) {
 
 	data, err := ioutil.ReadFile(name)
 	nodes := node{}
 	nodes.name = make(map[string]int)
-	e(err)
+	bug(err)
 	lines := strings.Split(string(data), "\n")
 	g.n_nodes = len(strings.Replace(lines[0], " ", "", -1))
 	i := 0
@@ -70,7 +57,8 @@ func (g *Graph) CreateGraph(name string, kind string) {
 		ed.nodes = append(ed.nodes, con[0])
 		ed.nodes = append(ed.nodes, con[1])
 		c, err := strconv.Atoi(con[2])
-		e(err)
+
+		bug(err)
 		ed.cost = c
 		g.edges = append(g.edges, ed)
 
@@ -81,61 +69,108 @@ func (g *Graph) CreateGraph(name string, kind string) {
 	//len(strings.Replace(lines[0], " ", "", -1))
 }
 
-func (g *Graph) DepthGraphHamiltonian(start string, end string) {
-	g.Walk = ""
-	g.check = make([]bool, len(g.nodes.name))
+func (g *Graph) DepthGraphHamiltonian(start string, end string) string {
+	//g.Walk = ""
+	walk := ""
+	check := make([]bool, len(g.nodes.name))
+	var stack []string
 	flag := 0
 	/*flag is a flag to use for first iteration*/
-	for flag == 0 || len(g.stack) != 0 {
+	for flag == 0 || len(stack) != 0 {
 		flag = 1
-
-		g.Walk += start + " "
-		g.check[g.nodes.name[start]] = true
+		walk += start + " "
+		check[g.nodes.name[start]] = true
 		if g.kind != "ham" {
-			e(errors.New("Kind of Graph doesn't support this type of graph"))
+			bug(errors.New("Kind of Graph doesn't support this type of graph"))
 		}
 		for _, edge := range g.edges {
 			if edge.nodes[0] == start {
-				if !g.check[g.nodes.name[edge.nodes[1]]] {
-					g.check[g.nodes.name[edge.nodes[1]]] = true
-					g.stack = append(g.stack, edge.nodes[1])
+				if !check[g.nodes.name[edge.nodes[1]]] {
+					check[g.nodes.name[edge.nodes[1]]] = true
+					stack = append(stack, edge.nodes[1])
 				}
 			}
 		}
-		x, stack := g.stack[len(g.stack)-1], g.stack[:len(g.stack)-1]
-		g.stack = stack
+		x := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
 		start = x
 	}
-	g.Walk += start
+	walk += start
+	return walk
 }
 
-func (g *Graph) WideGraphHamiltonian(start string, end string) {
+func (g *Graph) WideGraphHamiltonian(start string, end string) string {
 
+	walk := ""
+	check := make([]bool, len(g.nodes.name))
+	var stack []string
 	flag := 0
-	if g.kind != "ham" {
-		e(errors.New("Kind of Graph doesn't support this type of graph"))
-	}
 	/*flag is a flag to use for first iteration*/
-	for flag == 0 || len(g.stack) != 0 {
+	for flag == 0 || len(stack) != 0 {
 		flag = 1
-		g.Walk += start + " "
-		g.check[g.nodes.name[start]] = true
+		walk += start + " "
+		check[g.nodes.name[start]] = true
+		if g.kind != "ham" {
+			bug(errors.New("Kind of Graph doesn't support this type of graph"))
+		}
 		for _, edge := range g.edges {
 			if edge.nodes[0] == start {
-				if !g.check[g.nodes.name[edge.nodes[1]]] {
-					g.check[g.nodes.name[edge.nodes[1]]] = true
-					g.stack = append(g.stack, edge.nodes[1])
+				if !check[g.nodes.name[edge.nodes[1]]] {
+					check[g.nodes.name[edge.nodes[1]]] = true
+					stack = append(stack, edge.nodes[1])
 				}
 			}
 		}
-		x, stack := g.stack[0], g.stack[1:len(g.stack)]
-		g.stack = stack
+		x := stack[0]
+		stack = stack[1:len(stack)]
 		start = x
 	}
-	g.Walk += start
+	walk += start
+	return walk
+
+}
+func (g *Graph) checkHamiltonianGraph() {
 
 }
 
-func (g *Graph) WideGraphNoHamiltonian(start string, end string) {
-	t := tree.Tree{}
+func (g *Graph) WideGraphNoHamiltonian(start string, i int) *tree.Tree {
+	t := tree.Tree{i, start, nil, nil}
+
+	//check := make([]bool, len(g.nodes.name))
+	//var stack []string
+	var flag int = 0
+
+	//flag := 0
+	/*flag is a flag to use for first iteration*/
+	for {
+
+		//check[g.nodes.name[start]] = true
+		if g.kind != "no-ham" {
+			bug(errors.New("Kind of Graph doesn't support this type of graph"))
+		}
+		for _, edge := range g.edges {
+			if edge.nodes[0] == start {
+				//if !check[g.nodes.name[edge.nodes[1]]] {
+				t.Childs = append(t.Childs, &tree.Tree{i, string(edge.nodes[1]), nil, &t})
+				//check[g.nodes.name[edge.nodes[1]]] = true
+				g.WideGraphNoHamiltonian(edge.nodes[0], i)
+				i += 1
+				//}
+				flag = 1
+			}
+		}
+		if flag != 1 {
+			return nil
+		}
+		/*
+			if len(stack) == 0 {
+				break
+			}
+			fmt.Println(stack)
+			x := stack[0]
+			stack = stack[1:len(stack)]
+			start = x
+		*/
+	}
+	return &t
 }

@@ -24,3 +24,11 @@ func (t *Tree) PrintTree() {
 	fmt.Println("Father: ", t.Content, "childs: ", sheet)
 	return
 }
+
+func (t *Tree) GetChild(node string) {
+	for _, child := range t.Childs {
+		if len(child.Childs) != 0 {
+
+		}
+	}
+}
